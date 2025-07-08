@@ -1,0 +1,34 @@
+import type { GadgetSettings } from "gadget-server";
+
+export const settings: GadgetSettings = {
+  type: "gadget/settings/v1",
+  frameworkVersion: "v1.4.0",
+  plugins: {
+    connections: {
+      shopify: {
+        apiVersion: "2025-07",
+        enabledModels: [
+          "shopifyCustomer",
+          "shopifyFulfillment",
+          "shopifyLocation",
+          "shopifyOrder",
+          "shopifyProduct",
+          "shopifyRefund",
+        ],
+        type: "partner",
+        scopes: [
+          "read_customer_events",
+          "read_locations",
+          "read_order_edits",
+          "read_products",
+          "unauthenticated_write_customers",
+          "write_customers",
+          "write_fulfillments",
+          "write_orders",
+          "write_shipping",
+        ],
+        customerAuthenticationEnabled: false,
+      },
+    },
+  },
+};
