@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { AutoTable } from "@gadgetinc/react/auto/polaris";
 import {
   Banner,
@@ -7,11 +8,30 @@ import {
   Layout,
   Link,
   Page,
+  Spinner,
   Text,
 } from "@shopify/polaris";
-import { api } from "../api";
+import { getApi } from "../api";
 
-export const IndexPage = () => {
+const IndexPage = () => {
+  const [api, setApi] = useState(null);
+  const [apiReady, setApiReady] = useState(false);
+
+  useEffect(() => {
+    // Initialize API client
+    const initializeApi = async () => {
+      try {
+        const apiClient = await getApi();
+        setApi(apiClient);
+        setApiReady(true);
+      } catch (error) {
+        console.error("Failed to initialize API client:", error);
+      }
+    };
+
+    initializeApi();
+  }, []);
+
   return (
     <Page title="App">
       <Layout>
@@ -43,27 +63,35 @@ export const IndexPage = () => {
         </Layout.Section>
         <Layout.Section>
           <Card padding="0">
-            {/* use Autocomponents to build UI quickly: https://docs.gadget.dev/guides/frontend/autocomponents  */}
-            <AutoTable
-              //@ts-ignore
-              model={api.shopifyShop}
-              columns={["name", "countryName", "currency", "customerEmail"]}
-            />
-            <Box padding="400">
-              <Text variant="headingMd" as="h6">
-                Shop records fetched from:{" "}
-                <Link
-                  url={`/edit/model/DataModel-Shopify-Shop/data`}
-                  target="_blank"
-                  removeUnderline
-                >
-                  api/models/shopifyShop/data
-                </Link>
-              </Text>
-            </Box>
+            {!apiReady || !api ? (
+              <Box padding="400" inlineAlign="center">
+                <Spinner accessibilityLabel="Loading shop data" size="large" />
+              </Box>
+            ) : (
+              <>
+                <AutoTable
+                  model={api.shopifyShop}
+                  columns={["name", "countryName", "currency", "customerEmail"]}
+                />
+                <Box padding="400">
+                  <Text variant="headingMd" as="h6">
+                    Shop records fetched from:{" "}
+                    <Link
+                      url={`/edit/model/DataModel-Shopify-Shop/data`}
+                      target="_blank"
+                      removeUnderline
+                    >
+                      api/models/shopifyShop/data
+                    </Link>
+                  </Text>
+                </Box>
+              </>
+            )}
           </Card>
         </Layout.Section>
       </Layout>
     </Page>
   );
 };
+
+export default IndexPage;

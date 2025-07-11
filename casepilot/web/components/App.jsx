@@ -1,3 +1,4 @@
+import React, {lazy, Suspense} from "react";
 import {
   AppType,
   Provider as GadgetProvider,
@@ -16,9 +17,10 @@ import {
   useLocation,
   useNavigate,
 } from "react-router";
-import { api } from "../api";
-import { IndexPage } from "../routes/index";
+import { getApi } from "../api";
+const IndexPage = lazy(() => import("../routes/index"))
 import "./App.css";
+import ReturnPortal from "../routes/ReturnPortal";
 
 function Error404() {
   const navigate = useNavigate();
@@ -38,10 +40,19 @@ function Error404() {
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Layout />}>
-        <Route index element={<IndexPage />} />
-        <Route path="*" element={<Error404 />} />
-      </Route>
+      <>
+        <Route path="/returns" element={<StandAloneReturnPortal/>} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={
+            <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+              <Spinner accessibilityLabel="Loading page" size="large" />
+            </div>}>
+              <IndexPage />
+            </Suspense>
+          } />
+          <Route path="*" element={<Error404 />} />
+        </Route>
+      </>
     )
   );
 
@@ -52,12 +63,60 @@ function App() {
   );
 }
 
+function StandAloneReturnPortal() {
+  return <ReturnPortal />
+}
+
 function Layout() {
+  const [configLoaded, setConfigLoaded] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    const waitForConfig = async () => {
+      try {
+        // Wait for gadgetConfig to be available
+        let attempts = 0;
+        while (!window.gadgetConfig && attempts < 100) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+        
+        if (!window.gadgetConfig) {
+          throw new Error("Gadget configuration failed to load");
+        }
+
+        setConfigLoaded(true);
+      } catch (err) {
+        console.error("Failed to load configuration:", err);
+        setError(err.message);
+      }
+    };
+
+    waitForConfig();
+  }, []);
+
+  if (error) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center" }}>
+        <Text variant="headingMd" as="h2">Configuration Error</Text>
+        <Text as="p">{error}</Text>
+      </div>
+    );
+  }
+
+  if (!configLoaded) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+        <Spinner accessibilityLabel="Loading configuration" size="large" />
+      </div>
+    );
+  }
+
   return (
     <GadgetProvider
       type={AppType.Embedded}
       shopifyApiKey={window.gadgetConfig.apiKeys.shopify}
-      api={api}
+      api={getApi()}
     >
       <AuthenticatedApp />
     </GadgetProvider>
