@@ -1,7 +1,7 @@
 import { ActionOptions } from "gadget-server";
 
 /** @type { ActionRun } */
-export const run = async ({params, logger, api, connections }) => {
+export const run = async ({params, api }) => {
 
     const {email, postalCode } = params
 
@@ -13,7 +13,7 @@ export const run = async ({params, logger, api, connections }) => {
             id: true,
             name: true,
             email: true,
-            totalprice: true,
+            totalPrice: true,
             shippingAddress: true,
             billingAddress: true,
         }

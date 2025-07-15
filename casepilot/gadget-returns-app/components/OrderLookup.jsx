@@ -2,7 +2,6 @@ import RightArrow from "../assets/svgs/right_arrow_svg";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import ReturnSteps from "./ReturnSteps";
-import { Client } from "@gadget-client/casepilot"
 import { useState } from "react"
 
 function OrderLookup({step, onNext}) {
@@ -14,21 +13,18 @@ function OrderLookup({step, onNext}) {
         setLoading(true)
         setError(null)
 
-        
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const postalCode = formData.get('postalCode');
         
         // Basic validation
         if (!email || !postalCode) {
-            alert('Please fill in all required fields');
+            setError('Please fill in all required fields');
             setLoading(false)
             return;
         }
 
-        
         try {
-           
             const res = await fetch("/api/lookup-order", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -53,7 +49,6 @@ function OrderLookup({step, onNext}) {
         } finally {
             setLoading(false)
         }
-
     }
 
     return(
@@ -63,35 +58,11 @@ function OrderLookup({step, onNext}) {
             <ReturnSteps currentStep={step} />
             <section className="return-form">
                 <h2 className="return-form__title">Order Information</h2>
+                {error && <div className="error-message">{error}</div>}
                 <form className="return-form__container" onSubmit={onSubmit}>
-                    <div className="return-form__field">
-                        <label htmlFor="email" className="return-form__label">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="return-form__input"
-                            required
-                        />
-                    </div>
-                    
-                    <div className="return-form__field">
-                        <label htmlFor="postalCode" className="return-form__label">
-                            Postal Code
-                        </label>
-                        <input
-                            type="text"
-                            id="postalCode"
-                            name="postalCode"
-                            className="return-form__input"
-                            required
-                        />
-                    </div>
-                    
-                    <button type="submit" className="return-form__submit" >
-                        Continue
+                    // ...existing form fields...
+                    <button type="submit" className="return-form__submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'Continue'}
                     </button>
                 </form>
             </section>

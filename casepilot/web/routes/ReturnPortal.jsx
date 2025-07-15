@@ -17,6 +17,8 @@ function ReturnPortal() {
      
     }
 
+    console.log(orderData)
+
     return (
         <>
            {step === 1 && <OrderLookup step = {step} onNext = {(orders) => handleNext(orders, 2)}/>}

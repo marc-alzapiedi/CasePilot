@@ -72,10 +72,7 @@ export const permissions: GadgetPermissions = {
           },
         },
         shopifyOrder: {
-          read: {
-            filter:
-              "accessControl/filters/shopify/shopifyOrder.gelly",
-          },
+          read: true,
           actions: {
             create: true,
             delete: true,
@@ -125,6 +122,17 @@ export const permissions: GadgetPermissions = {
     },
     unauthenticated: {
       storageKey: "unauthenticated",
+    },
+    "API Access": {
+      storageKey: "Fwu8u0CELPx3",
+      models: {
+        shopifyOrder: {
+          read: true,
+        },
+      },
+      actions: {
+        orderData: true,
+      },
     },
   },
 };

@@ -1,10 +1,4 @@
 import React, {lazy, Suspense} from "react";
-import {
-  AppType,
-  Provider as GadgetProvider,
-  useGadget,
-} from "@gadgetinc/react-shopify-app-bridge";
-import { NavMenu } from "@shopify/app-bridge-react";
 import { Box, Card, Page, Spinner, Text } from "@shopify/polaris";
 import { useEffect } from "react";
 import {
@@ -70,10 +64,20 @@ function StandAloneReturnPortal() {
 function Layout() {
   const [configLoaded, setConfigLoaded] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [AppBridgeComponents, setAppBridgeComponents] = React.useState(null);
 
   React.useEffect(() => {
-    const waitForConfig = async () => {
+    const loadAppBridge = async () => {
       try {
+        // Dynamically import app-bridge dependencies
+        const [
+          { AppType, Provider: GadgetProvider, useGadget },
+          { NavMenu }
+        ] = await Promise.all([
+          import("@gadgetinc/react-shopify-app-bridge"),
+          import("@shopify/app-bridge-react")
+        ]);
+
         // Wait for gadgetConfig to be available
         let attempts = 0;
         while (!window.gadgetConfig && attempts < 100) {
@@ -85,6 +89,12 @@ function Layout() {
           throw new Error("Gadget configuration failed to load");
         }
 
+        setAppBridgeComponents({
+          AppType,
+          GadgetProvider,
+          useGadget,
+          NavMenu
+        });
         setConfigLoaded(true);
       } catch (err) {
         console.error("Failed to load configuration:", err);
@@ -92,7 +102,7 @@ function Layout() {
       }
     };
 
-    waitForConfig();
+    loadAppBridge();
   }, []);
 
   if (error) {
@@ -104,7 +114,7 @@ function Layout() {
     );
   }
 
-  if (!configLoaded) {
+  if (!configLoaded || !AppBridgeComponents) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
         <Spinner accessibilityLabel="Loading configuration" size="large" />
@@ -112,20 +122,23 @@ function Layout() {
     );
   }
 
+  const { AppType, GadgetProvider } = AppBridgeComponents;
+
   return (
     <GadgetProvider
       type={AppType.Embedded}
       shopifyApiKey={window.gadgetConfig.apiKeys.shopify}
       api={getApi()}
     >
-      <AuthenticatedApp />
+      <AuthenticatedApp AppBridgeComponents={AppBridgeComponents} />
     </GadgetProvider>
   );
 }
 
-function AuthenticatedApp() {
-  // we use `isAuthenticated` to render pages once the OAuth flow is complete!
+function AuthenticatedApp({ AppBridgeComponents }) {
+  const { useGadget } = AppBridgeComponents;
   const { isAuthenticated, loading } = useGadget();
+  
   if (loading) {
     return (
       <div
@@ -141,10 +154,12 @@ function AuthenticatedApp() {
       </div>
     );
   }
-  return isAuthenticated ? <EmbeddedApp /> : <UnauthenticatedApp />;
+  return isAuthenticated ? <EmbeddedApp AppBridgeComponents={AppBridgeComponents} /> : <UnauthenticatedApp />;
 }
 
-function EmbeddedApp() {
+function EmbeddedApp({ AppBridgeComponents }) {
+  const { NavMenu } = AppBridgeComponents;
+  
   return (
     <>
       <Outlet />
