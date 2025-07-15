@@ -1,37 +1,41 @@
-import { Client } from "@gadget-client/casepilot";
+import { Client } from "@gadget-client/casepilot"
+import Cors from "cors"
+import { initMiddleware } from "../../lib/init-middleware"
+
+const cors = initMiddleware(
+    Cors({
+        origin: "http://localhost:5173",
+        methods: ["POST", "GET", "OPTIONS"],
+        credentials: true
+    })
+)
+
+
+const api = new Client({
+    authenticationMode: {
+        apiKey: process.env.GADGET_API_KEY
+    }
+})
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+    await cors(req, res)
+
+    if(req.method === 'OPTIONS') {
+        return res.status(200).end()
     }
-
-    const { email, postalCode } = req.body;
-
-    if (!email || !postalCode) {
-        return res.status(400).json({ error: 'Email and postal code are required' });
-    }
-
+    
+    if (req.method !== "POST") return res.status(405).end("Method Not Allowed")
+        
+    const { email, postalCode } = req.body
+        
     try {
-        const client = new Client({
-            apiKey: process.env.GADGET_API_KEY
-        });
-
-        // Call your Gadget global action here
-        // Replace 'lookupOrder' with your actual action name
-        const result = await client.globalAction.lookupOrder({
+        const response = api.orderData({
             email,
             postalCode
-        });
+        })
 
-        res.status(200).json({
-            success: true,
-            orders: result.orders || []
-        });
-    } catch (error) {
-        console.error('Gadget API error:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to lookup orders'
-        });
+        res.status(200).json({ success: true, orders: response})
+    } catch (err) {
+        res.status(500).json({ success: false, error: err})
     }
 }
