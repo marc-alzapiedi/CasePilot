@@ -1,4 +1,4 @@
-import RightArrow from "../assets/svgs/right_arrow_svg";
+// import RightArrow from "../assets/svgs/right_arrow_svg";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import ReturnSteps from "./ReturnSteps";
