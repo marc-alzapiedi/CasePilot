@@ -28,8 +28,10 @@ function OrderLookup({step, onNext}) {
 
         
         try {
+
+            // console.log(email, postalCode)
            
-            const res = await fetch("/api/lookup-order", {
+            const res = await fetch("http://localhost:3000/api/lookup-order", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({email, postalCode})
@@ -39,13 +41,17 @@ function OrderLookup({step, onNext}) {
                 throw new Error (`HTTP error! status: ${res.status}`)
             }
             const result = await res.json()
+            console.log(result)
             
             if (result.success && result.orders.length > 0) {
                 console.log('Found orders:', result.orders)
                 onNext(result.orders)
             } else {
                 setError('No orders found matching the provided email and postal code')
+                
             }
+
+            
              
         } catch (err){
             console.error('Order lookup failed:', err)
