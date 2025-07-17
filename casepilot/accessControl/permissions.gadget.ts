@@ -44,6 +44,11 @@ export const permissions: GadgetPermissions = {
             update: true,
           },
         },
+        shopifyFile: {
+          read: {
+            filter: "accessControl/filters/shopify/shopifyFile.gelly",
+          },
+        },
         shopifyFulfillment: {
           read: {
             filter:
@@ -79,10 +84,63 @@ export const permissions: GadgetPermissions = {
             update: true,
           },
         },
+        shopifyOrderLineItem: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyOrderLineItem.gelly",
+          },
+          actions: {
+            create: true,
+            delete: true,
+            update: true,
+          },
+        },
+        shopifyPriceList: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyPriceList.gelly",
+          },
+        },
+        shopifyPriceListPrice: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyPriceListPrice.gelly",
+          },
+        },
         shopifyProduct: {
           read: {
             filter:
               "accessControl/filters/shopify/shopifyProduct.gelly",
+          },
+        },
+        shopifyProductMedia: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyProductMedia.gelly",
+          },
+        },
+        shopifyProductOption: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyProductOption.gelly",
+          },
+        },
+        shopifyProductVariant: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyProductVariant.gelly",
+          },
+        },
+        shopifyProductVariantMedia: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyProductVariantMedia.gelly",
+          },
+        },
+        shopifyQuantityPriceBreak: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyQuantityPriceBreak.gelly",
           },
         },
         shopifyRefund: {

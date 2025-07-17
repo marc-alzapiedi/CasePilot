@@ -1,13 +1,27 @@
-import RightArrow from "../assets/svgs/right_arrow_svg";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import ReturnSteps from "./ReturnSteps";
-import { Client } from "@gadget-client/casepilot"
 import { useState } from "react"
 
 function OrderLookup({step, onNext}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
+    const [orderNumber, setOrderNumber] = useState('')
+    const [isOrderNumberFocused, setIsOrderNumberFocused] = useState(false)
+
+    const handleOrderNumberFocus = () => {
+        setIsOrderNumberFocused(true)
+        if (orderNumber === '') {
+            setOrderNumber('#')
+        }
+    }
+
+    const handleOrderNumberBlur = () => {
+        setIsOrderNumberFocused(false)
+        if (orderNumber === '#') {
+            setOrderNumber('')
+        }
+    }
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -18,9 +32,10 @@ function OrderLookup({step, onNext}) {
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const postalCode = formData.get('postalCode');
+        const orderNumberValue = orderNumber;
         
         // Basic validation
-        if (!email || !postalCode) {
+        if (!email || !postalCode || !orderNumberValue || orderNumberValue === '#') {
             alert('Please fill in all required fields');
             setLoading(false)
             return;
@@ -28,24 +43,21 @@ function OrderLookup({step, onNext}) {
 
         
         try {
-
-            // console.log(email, postalCode)
-           
             const res = await fetch("http://localhost:3000/api/lookup-order", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({email, postalCode})
+                body: JSON.stringify({email, postalCode, orderNumber: orderNumberValue})
             })
 
             if (!res.ok){
                 throw new Error (`HTTP error! status: ${res.status}`)
             }
             const result = await res.json()
-            console.log(result)
+            // console.log(result)
             
             if (result.success && result.orders.length > 0) {
                 console.log('Found orders:', result.orders)
-                onNext(result.orders)
+                onNext(result)
             } else {
                 setError('No orders found matching the provided email and postal code')
                 
@@ -92,6 +104,23 @@ function OrderLookup({step, onNext}) {
                             id="postalCode"
                             name="postalCode"
                             className="return-form__input"
+                            required
+                        />
+                    </div>
+                    
+                    <div className="return-form__field">
+                        <label htmlFor="orderNumber" className="return-form__label">
+                            Order Number
+                        </label>
+                        <input
+                            type="text"
+                            id="orderNumber"
+                            name="orderNumber"
+                            className="return-form__input"
+                            value={orderNumber}
+                            onChange={(e) => setOrderNumber(e.target.value)}
+                            onFocus={handleOrderNumberFocus}
+                            onBlur={handleOrderNumberBlur}
                             required
                         />
                     </div>

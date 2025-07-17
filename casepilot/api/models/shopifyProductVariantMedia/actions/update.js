@@ -3,7 +3,6 @@ import { preventCrossShopDataAccess } from "gadget-server/shopify";
 
 /** @type { ActionRun } */
 export const run = async ({ params, record, logger, api, connections }) => {
-
   applyParams(params, record);
   await preventCrossShopDataAccess(params, record);
   await save(record);
@@ -15,4 +14,4 @@ export const onSuccess = async ({ params, record, logger, api, connections }) =>
 };
 
 /** @type { ActionOptions } */
-export const options = { actionType: "create" };
+export const options = { actionType: "update" };

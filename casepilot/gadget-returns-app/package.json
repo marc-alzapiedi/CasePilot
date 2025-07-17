@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@gadget-client/casepilot": "^1.2.0-development.1257",
+    "@gadget-client/casepilot": "^1.2.0-development.1915",
     "cors": "^2.8.5",
     "next": "15.3.5",
     "react": "^19.0.0",

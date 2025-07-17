@@ -1,15 +1,23 @@
-
 import { ActionOptions } from "gadget-server";
+
+export const params = {
+    email: { type: "string" },
+    postalCode: { type: "string" },
+    orderNumber: { type: "string" },
+};
 
 /** @type { ActionRun } */
 export const run = async ({params, api}) => {
 
-    console.log(params)
-    const {email, postalCode } = params
+    
+    const {email, postalCode, orderNumber } = params
+
+    console.log(email, postalCode, orderNumber)
 
     const getOrders = await api.shopifyOrder.findMany({
         filter: { 
-            email: { equals: email } 
+            email: { equals: email },
+            name:  { equals: orderNumber}
         },
         select: {
             id: true,
@@ -31,10 +39,70 @@ export const run = async ({params, api}) => {
 
 
 
+    const getOrderLineItems = await api.shopifyOrderLineItem.findMany({
+        filter: {
+            order: { id: {equals: filteredOrders[0]?.id} }
+        },
+        select: {
+            id: true,
+            shop: {
+                id: true
+            },
+            currentQuantity: true,
+            fulfillableQuantity: true,
+            title: true,
+            product: {
+                id: true,
+            },
+            price: true,
+        }
+    })
+
+
+
+
+    let items = []
+
+    for (const lineItem of getOrderLineItems) {
+
+        let getMedia = await api.shopifyProductMedia.findMany({
+            filter: {
+                product: { id: { equals: lineItem.product.id } }
+            },
+            select: {
+                id: true,
+                file: {
+                    id: true
+                }
+            }
+        });
+        
+        console.log(getMedia)
+
+        let getImage = await api.shopifyFile.findMany({
+            filter: {
+                id: {
+                    equals: getMedia[0]?.file?.id
+                }
+            },
+            select: {
+                image: true,
+            }
+        })
+
+        items.push({
+            productImage: getImage[0]?.image || null,
+            title: lineItem.title,
+            quantity: lineItem.currentQuantity,
+            returnEligibility: lineItem.fulfillableQuantity > 0,
+            price: lineItem.price
+        })
+    }
 
     return {
         success: true,
-        orders: filteredOrders
+        orders: filteredOrders,
+        items: items
     }
 
 
@@ -45,11 +113,7 @@ export const run = async ({params, api}) => {
 
 /** @type { ActionOptions } */
 export const options = {
-    actionType: "global",
+    actionType: "create",
     triggers: { api: true }
 }
 
-export const params = {
-    email: { type: "string", required: true },
-    postalCode: { type: "string", required: true }
-};

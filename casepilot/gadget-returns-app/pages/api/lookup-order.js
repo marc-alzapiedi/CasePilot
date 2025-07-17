@@ -1,5 +1,4 @@
-// import { Client } from "@gadget-client/casepilot"
-import { getApi } from "../../../web/api"
+import { Client } from "@gadget-client/casepilot"
 import Cors from "cors"
 import { initMiddleware } from "../../lib/init-middleware"
 
@@ -12,13 +11,12 @@ const cors = initMiddleware(
 )
 
 
-// const api = new Client({
-//     authenticationMode: {
-//         apiKey: process.env.GADGET_API_KEY
-//     }
-// })
+const api = new Client({
+    authenticationMode: {
+        apiKey: process.env.GADGET_API_KEY
+    }
+})
 
-const api = getApi({ standalone: true, environment: process.env.NODE_ENV})
 
 
 
@@ -34,16 +32,18 @@ export default async function handler(req, res) {
     
     if (req.method !== "POST") return res.status(405).end("Method Not Allowed")
         
-    const { email, postalCode } = req.body
+    const { email, postalCode, orderNumber } = req.body
     
 
   
     try {
 
-        console.log(email, postalCode)
+        console.log(email, postalCode, orderNumber)
+
         const response = await api.orderData({
             email: email,
-            postalCode: postalCode
+            postalCode: postalCode,
+            orderNumber: orderNumber
         })
 
 

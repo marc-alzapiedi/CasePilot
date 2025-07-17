@@ -12,7 +12,6 @@ function ReturnSteps({
     ]
 }) {
 
-    console.log(currentStep)
     return (
         <section className="return-steps">
             <h2 className="return-steps__title">{title}</h2>

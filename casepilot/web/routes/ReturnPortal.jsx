@@ -17,12 +17,11 @@ function ReturnPortal() {
      
     }
 
-    console.log(orderData)
 
     return (
         <>
            {step === 1 && <OrderLookup step = {step} onNext = {(orders) => handleNext(orders, 2)}/>}
-           {step === 2 && <ItemSelection step = {step} onNext = {() => setStep(3)} onBack = {() => setStep(2)}/>} 
+           {step === 2 && <ItemSelection step = {step} onNext = {() => setStep(3)} onBack = {() => setStep(2)} orderData = {orderData}/>} 
             
         </>
     );

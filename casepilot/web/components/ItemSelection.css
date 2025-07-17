@@ -1,0 +1,150 @@
+.item-selection {
+  padding: 20px;
+}
+
+.item-selection__title {
+  margin: 0 0 20px 0;
+  font-size: 2rem;
+}
+
+.item-selection__list {
+  list-style: none;
+  padding: 0;
+}
+
+.item-selection__item {
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.item-selection__item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.item-selection__item--selected {
+  border-color: #007bff;
+  background-color: #f8f9ff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.item-selection__image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.item-selection__content {
+  flex: 1;
+}
+
+.item-selection__product-title {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+}
+
+.item-selection__quantity {
+  margin: 4px 0;
+  font-size: 1.05rem;
+}
+
+.item-selection__price {
+  margin: 4px 0;
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+.item-selection__form {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.item-selection__form-title {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.item-selection__form-field {
+  margin-bottom: 15px;
+}
+
+.item-selection__form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.item-selection__form-input,
+.item-selection__form-select,
+.item-selection__form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.item-selection__form-input:focus,
+.item-selection__form-select:focus,
+.item-selection__form-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.item-selection__form-file {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.item-selection__form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.item-selection__form-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.item-selection__form-button--cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.item-selection__form-button--cancel:hover {
+  background-color: #5a6268;
+}
+
+.item-selection__form-button--add {
+  background-color: #007bff;
+  color: white;
+}
+
+.item-selection__form-button--add:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.item-selection__form-button--add:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

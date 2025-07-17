@@ -7,6 +7,7 @@ export const schema: GadgetModel = {
   type: "gadget/model-schema/v1",
   storageKey: "DataModel-Shopify-Order",
   fields: {
+    LineItems: { type: "json", storageKey: "aGTnbLwx3k5e" },
     refunds: {
       type: "hasMany",
       children: { model: "refund", belongsToField: "order" },
@@ -73,6 +74,7 @@ export const schema: GadgetModel = {
       "hasTimelineComment",
       "landingSite",
       "legacyResourceId",
+      "lineItems",
       "location",
       "merchantEditable",
       "merchantEditableErrors",
