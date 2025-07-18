@@ -144,7 +144,77 @@
   background-color: #0056b3;
 }
 
+/* .item-selection__order-summary {
+  padding: 20px;
+  margin-top: 20px;
+  max-width: 300px;
+  margin-left: auto;
+}
+
+.item-selection__order-summary-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.item-selection__order-summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 1rem;
+}
+
+.item-selection__order-summary-divider {
+  border-top: 1px solid #ddd;
+  margin: 10px 0;
+}
+
+.item-selection__order-summary-total {
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-top: 1px solid #333;
+  padding-top: 12px;
+  margin-top: 8px;
+} */
+
 .item-selection__form-button--add:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+.item-selection__navigation {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.item-selection__nav-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.item-selection__nav-button--back {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.item-selection__nav-button--back:hover {
+    background-color: #e5e7eb;
+}
+
+.item-selection__nav-button--continue {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.item-selection__nav-button--continue:hover {
+    background-color: #2563eb;
+}
+   

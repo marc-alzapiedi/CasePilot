@@ -55,11 +55,11 @@ function OrderLookup({step, onNext}) {
             const result = await res.json()
             // console.log(result)
             
-            if (result.success && result.orders.length > 0) {
+            if (result.success && result.orders !== "No orders found") {
                 console.log('Found orders:', result.orders)
                 onNext(result)
             } else {
-                setError('No orders found matching the provided email and postal code')
+                setError('No orders found matching the provided email, postal code, and order number. Please try again, or contact customer support. ')
                 
             }
 
@@ -81,6 +81,16 @@ function OrderLookup({step, onNext}) {
             <ReturnSteps currentStep={step} />
             <section className="return-form">
                 <h2 className="return-form__title">Order Information</h2>
+                {error && (
+                    <div className="return-form__error">
+                        {error}
+                    </div>
+                )}
+                { loading && (
+                    <div className="return-form__loading">
+                        Loading...
+                    </div>
+                )}
                 <form className="return-form__container" onSubmit={onSubmit}>
                     <div className="return-form__field">
                         <label htmlFor="email" className="return-form__label">
