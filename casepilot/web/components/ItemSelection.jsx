@@ -4,10 +4,12 @@ import Navigation from "./Navigation";
 import ReturnSteps from "./ReturnSteps";
 import "./ItemSelection.css";
 
-function ItemSelection({ step, onNext, orderData, onBack }) {
+function ItemSelection({ step, onNext, multiStepData, onBack }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [formDataMap, setFormDataMap] = useState({});
   const formRef = useRef(null);
+
+  console.log(selectedItems)
 
   const handleItemSelect = (item, index) => {
     setSelectedItems((prev) => {
@@ -69,6 +71,8 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
   };
 
   const handleFormChange = (itemIndex, field, value) => {
+
+
     setFormDataMap((prev) => ({
       ...prev,
       [itemIndex]: {
@@ -110,6 +114,16 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
     }
   };
 
+  const handleFormSubmit = (e, selectedItem) => {
+    e.preventDefault();
+    const formData = formDataMap[selectedItem.index];
+    if (formData?.reason) {
+      // Handle form submission logic here
+      console.log("Form submitted for item:", selectedItem, "with data:", formData);
+      // You can add logic to proceed to next step or handle the form data
+    }
+  };
+
   useEffect(() => {
     if (selectedItems.length > 0 && formRef.current) {
       requestAnimationFrame(() => {
@@ -133,6 +147,8 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
     }
   }, [selectedItems]);
 
+  console.log(formDataMap)
+
   return (
     <>
       <Header />
@@ -143,7 +159,7 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
         <h2 className="item-selection__title">Select Items to Return</h2>
 
         <ul className="item-selection__list">
-          {orderData?.items?.map((item, index) => (
+          {multiStepData?.step1?.items?.map((item, index) => (
             <li
               key={index}
               className={`item-selection__item ${
@@ -169,7 +185,7 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
                   Price:{" "}
                   {formatCurrency(
                     item.price * item.quantity,
-                    orderData?.orders[0]?.currency || "USD"
+                    multiStepData?.step1?.orders[0]?.currency || "USD"
                   )}
                 </p>
               </div>
@@ -181,95 +197,119 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
                     <h3 className="item-selection__order-summary-title">Order Summary</h3>
                     <div className="item-selection__order-summary-line">
                         <span>Taxes:</span>
-                        <span>{formatCurrency(orderData?.orders[0]?.totalTaxSet?.shop_money?.amount || 0, orderData?.orders[0]?.currency || 'USD')}</span>
+                        <span>{formatCurrency(multiStepData?.step1.orders[0]?.totalTaxSet?.shop_money?.amount || 0, multiStepData?.step1.orders[0]?.currency || 'USD')}</span>
                     </div>
                     <div className="item-selection__order-summary-line">
                         <span>Shipping:</span>
-                        <span>{formatCurrency(orderData?.orders[0]?.totalShippingPriceSet?.shop_money?.amount || 0, orderData?.orders[0]?.currency || 'USD')}</span>
+                        <span>{formatCurrency(multiStepData?.step1.orders[0]?.totalShippingPriceSet?.shop_money?.amount || 0, multiStepData?.step1.orders[0]?.currency || 'USD')}</span>
                     </div>
                     <div className="item-selection__order-summary-line item-selection__order-summary-total">
                         <span>Total:</span>
-                        <span>{formatCurrency(orderData?.orders[0]?.totalPriceSet?.shop_money?.amount || 0, orderData?.orders[0]?.currency || 'USD')}</span>
+                        <span>{formatCurrency(multiStepData?.step1.orders[0]?.totalPriceSet?.shop_money?.amount || 0, multiStepData?.step1.orders[0]?.currency || 'USD')}</span>
                     </div>
                 </div> */}
 
         {selectedItems.length > 0 && (
-          <div className="item-selection__forms" ref={formRef}>
+          <section className="item-selection__forms" ref={formRef}>
             {selectedItems.map((selectedItem) => (
-              <div key={selectedItem.index} className="item-selection__form">
-                <h3 className="item-selection__form-title">
-                  Return Details for: {selectedItem.title}
-                </h3>
+              <form
+                key={selectedItem.index}
+                className="item-selection__form"
+                onSubmit={(e) => handleFormSubmit(e, selectedItem)}
+              >
+                <fieldset>
+                  <legend className="item-selection__form-title">
+                    Return Details for: {selectedItem.title}
+                  </legend>
 
-                {selectedItem.quantity > 1 && (
+                  {selectedItem.quantity > 1 && (
+                    <div className="item-selection__form-field">
+                      <label
+                        htmlFor={`quantity-${selectedItem.index}`}
+                        className="item-selection__form-label"
+                      >
+                        Quantity to Return (max {selectedItem.quantity}):
+                      </label>
+                      <input
+                        id={`quantity-${selectedItem.index}`}
+                        type="number"
+                        min="1"
+                        max={selectedItem.quantity}
+                        value={formDataMap[selectedItem.index]?.quantity}
+                        onChange={(e) =>
+                          handleFormChange(
+                            selectedItem.index,
+                            "quantity",
+                            parseInt(e.target.value) 
+                          )
+                        }
+                        className="item-selection__form-input"
+                        required
+                      />
+                    </div>
+                  )}
+
                   <div className="item-selection__form-field">
-                    <label className="item-selection__form-label">
-                      Quantity to Return (max {selectedItem.quantity}):
+                    <label
+                      htmlFor={`reason-${selectedItem.index}`}
+                      className="item-selection__form-label"
+                    >
+                      Return Reason:
                     </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max={selectedItem.quantity}
-                      value={formDataMap[selectedItem.index]?.quantity || 1}
+                    <select
+                      id={`reason-${selectedItem.index}`}
+                      value={formDataMap[selectedItem.index]?.reason || ""}
                       onChange={(e) =>
-                        handleFormChange(
-                          selectedItem.index,
-                          "quantity",
-                          parseInt(e.target.value)
-                        )
+                        handleFormChange(selectedItem.index, "reason", e.target.value)
                       }
-                      className="item-selection__form-input"
-                    />
+                      className="item-selection__form-select"
+                      required
+                    >
+                      <option value="">Select a reason</option>
+                      <option value="too-big">Too big</option>
+                      <option value="damaged">Damaged</option>
+                      <option value="changed-mind">Changed mind</option>
+                      <option value="wrong-product">Ordered wrong product</option>
+                    </select>
                   </div>
-                )}
 
-                <div className="item-selection__form-field">
-                  <label className="item-selection__form-label">
-                    Return Reason:
-                  </label>
-                  <select
-                    value={formDataMap[selectedItem.index]?.reason || ""}
-                    onChange={(e) =>
-                      handleFormChange(selectedItem.index, "reason", e.target.value)
-                    }
-                    className="item-selection__form-select"
-                  >
-                    <option value="">Select a reason</option>
-                    <option value="too-big">Too big</option>
-                    <option value="damaged">Damaged</option>
-                    <option value="changed-mind">Changed mind</option>
-                    <option value="wrong-product">Ordered wrong product</option>
-                  </select>
-                </div>
+                  {formDataMap[selectedItem.index]?.reason === "damaged" && (
+                    <div className="item-selection__form-field">
+                      <label
+                        htmlFor={`photo-${selectedItem.index}`}
+                        className="item-selection__form-label"
+                      >
+                        Upload Photo of Damage:
+                      </label>
+                      <input
+                        id={`photo-${selectedItem.index}`}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handlePhotoUpload(selectedItem.index, e)}
+                        className="item-selection__form-file"
+                      />
+                    </div>
+                  )}
 
-                {formDataMap[selectedItem.index]?.reason === "damaged" && (
                   <div className="item-selection__form-field">
-                    <label className="item-selection__form-label">
-                      Upload Photo of Damage:
+                    <label
+                      htmlFor={`comment-${selectedItem.index}`}
+                      className="item-selection__form-label"
+                    >
+                      Additional Comments (Optional):
                     </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handlePhotoUpload(selectedItem.index, e)}
-                      className="item-selection__form-file"
+                    <textarea
+                      id={`comment-${selectedItem.index}`}
+                      value={formDataMap[selectedItem.index]?.comment || ""}
+                      onChange={(e) =>
+                        handleFormChange(selectedItem.index, "comment", e.target.value)
+                      }
+                      placeholder="Add any additional details..."
+                      className="item-selection__form-textarea"
+                      rows="3"
                     />
                   </div>
-                )}
-
-                <div className="item-selection__form-field">
-                  <label className="item-selection__form-label">
-                    Additional Comments (Optional):
-                  </label>
-                  <textarea
-                    value={formDataMap[selectedItem.index]?.comment || ""}
-                    onChange={(e) =>
-                      handleFormChange(selectedItem.index, "comment", e.target.value)
-                    }
-                    placeholder="Add any additional details..."
-                    className="item-selection__form-textarea"
-                    rows="3"
-                  />
-                </div>
+                </fieldset>
 
                 <div className="item-selection__form-actions">
                   <button
@@ -280,20 +320,20 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
                     Cancel
                   </button>
                   <button
-                    type="button"
+                    type="submit"
                     className="item-selection__form-button item-selection__form-button--add"
                     disabled={!formDataMap[selectedItem.index]?.reason}
                   >
                     Continue
                   </button>
                 </div>
-              </div>
+              </form>
             ))}
-          </div>
+          </section>
         )}
 
         {selectedItems.length === 0 && (
-          <div className="item-selection__navigation">
+          <nav className="item-selection__navigation">
             <button
               type="button"
               className="item-selection__nav-button item-selection__nav-button--back"
@@ -308,7 +348,7 @@ function ItemSelection({ step, onNext, orderData, onBack }) {
             >
               Continue
             </button>
-          </div>
+          </nav>
         )}
       </div>
     </>

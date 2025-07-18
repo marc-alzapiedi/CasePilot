@@ -7,21 +7,28 @@ import ItemSelection from "../components/ItemSelection";
 function ReturnPortal() {
 
     const [step, setStep] = useState(1)
-    const [orderData, setOrderData] = useState(null)
+    const [multiStepData, setMultiStepData] = useState({ })
 
     const handleNext = (data, nextStep) => {
         if (nextStep === 2) {
-            setOrderData(data)
+            setMultiStepData({ ...multiStepData, step1: data })
+        }
+        if (nextStep === 3) {
+            // Add the logic here 
         }
         setStep(nextStep)
      
     }
 
+    console.log(multiStepData)
+
+    
+
 
     return (
         <>
            {step === 1 && <OrderLookup step = {step} onNext = {(orders) => handleNext(orders, 2)}/>}
-           {step === 2 && <ItemSelection step = {step} onNext = {() => setStep(3)} onBack = {() => setStep(1)} orderData = {orderData}/>} 
+           {step === 2 && <ItemSelection step = {step} onNext = {() => setStep(3)} onBack = {() => setStep(1)} multiStepData = {multiStepData}/>} 
             
         </>
     );
