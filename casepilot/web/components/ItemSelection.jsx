@@ -9,7 +9,7 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
   const [formDataMap, setFormDataMap] = useState({});
   const formRef = useRef(null);
 
-  console.log(selectedItems)
+  // console.log(selectedItems)
 
   const handleItemSelect = (item, index) => {
     setSelectedItems((prev) => {
@@ -114,15 +114,39 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
     }
   };
 
-  const handleFormSubmit = (e, selectedItem) => {
-    e.preventDefault();
-    const formData = formDataMap[selectedItem.index];
-    if (formData?.reason) {
-      // Handle form submission logic here
-      console.log("Form submitted for item:", selectedItem, "with data:", formData);
-      // You can add logic to proceed to next step or handle the form data
-    }
+
+
+  const areAllFormsValid = () => {
+    if (selectedItems.length === 0) return false;
+    
+    return selectedItems.every(item => {
+      const formData = formDataMap[item.index];
+      return formData?.reason; 
+    });
   };
+
+  // console.log(areAllFormsValid())
+
+  const handleClick = () => {
+    // Collect all form data for selected items
+    const returnData = selectedItems.map(selectedItem => {
+      const formData = formDataMap[selectedItem.index];
+      return {
+        item: selectedItem,
+        formData: formData
+      };
+    });
+
+    // Log the collected data
+    console.log("Return data for all items:", returnData);
+
+    // Proceed to next step
+    // onNext({
+    //   selectedItems: selectedItems,
+    //   formDataMap: formDataMap,
+    //   returnData: returnData
+    // });
+  }
 
   useEffect(() => {
     if (selectedItems.length > 0 && formRef.current) {
@@ -147,7 +171,10 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
     }
   }, [selectedItems]);
 
-  console.log(formDataMap)
+  // console.log(formDataMap)
+
+
+
 
   return (
     <>
@@ -215,7 +242,6 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
               <form
                 key={selectedItem.index}
                 className="item-selection__form"
-                onSubmit={(e) => handleFormSubmit(e, selectedItem)}
               >
                 <fieldset>
                   <legend className="item-selection__form-title">
@@ -317,22 +343,22 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
                     className="item-selection__form-button item-selection__form-button--cancel"
                     onClick={() => handleCancel(selectedItem.index)}
                   >
-                    Cancel
+                    Remove Item
                   </button>
-                  <button
+                  {/* <button
                     type="submit"
                     className="item-selection__form-button item-selection__form-button--add"
                     disabled={!formDataMap[selectedItem.index]?.reason}
                   >
                     Continue
-                  </button>
+                  </button> */}
                 </div>
               </form>
             ))}
           </section>
         )}
 
-        {selectedItems.length === 0 && (
+        
           <nav className="item-selection__navigation">
             <button
               type="button"
@@ -344,12 +370,14 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
             <button
               type="button"
               className="item-selection__nav-button item-selection__nav-button--continue"
-              onClick={onNext}
+              onClick={handleClick}
+              disabled={!areAllFormsValid()}
+              data-tooltip={selectedItems.length === 0 ? "no-items" : "incomplete-forms"}
             >
               Continue
             </button>
           </nav>
-        )}
+        
       </div>
     </>
   );

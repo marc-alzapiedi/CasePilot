@@ -56,7 +56,7 @@ function OrderLookup({step, onNext}) {
             // console.log(result)
             
             if (result.success && result.orders !== "No orders found") {
-                console.log('Found orders:', result.orders)
+                // console.log('Found orders:', result.orders)
                 onNext(result)
             } else {
                 setError('No orders found matching the provided email, postal code, and order number. Please try again, or contact customer support. ')
