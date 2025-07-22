@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, { lazy, Suspense } from "react";
 import { Box, Card, Page, Spinner, Text } from "@shopify/polaris";
 import { useEffect } from "react";
 import {
@@ -12,9 +12,10 @@ import {
   useNavigate,
 } from "react-router";
 import { getApi } from "../api";
-const IndexPage = lazy(() => import("../routes/index"))
+const IndexPage = lazy(() => import("../routes/index"));
 import "./App.css";
 import ReturnPortal from "../routes/ReturnPortal";
+import { NavMenu } from '@shopify/app-bridge-react';
 
 function Error404() {
   const navigate = useNavigate();
@@ -35,15 +36,29 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/returns" element={<StandAloneReturnPortal/>} />
+        <Route path="/returns" element={<StandAloneReturnPortal />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={
-            <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-              <Spinner accessibilityLabel="Loading page" size="large" />
-            </div>}>
-              <IndexPage />
-            </Suspense>
-          } />
+          <Route
+            index
+            element={
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                    }}
+                  >
+                    <Spinner accessibilityLabel="Loading page" size="large" />
+                  </div>
+                }
+              >
+                <IndexPage />
+              </Suspense>
+            }
+          />
           <Route path="*" element={<Error404 />} />
         </Route>
       </>
@@ -58,7 +73,7 @@ function App() {
 }
 
 function StandAloneReturnPortal() {
-  return <ReturnPortal />
+  return <ReturnPortal />;
 }
 
 function Layout() {
@@ -72,19 +87,20 @@ function Layout() {
         // Dynamically import app-bridge dependencies
         const [
           { AppType, Provider: GadgetProvider, useGadget },
-          { NavMenu }
+          { NavMenu },
         ] = await Promise.all([
           import("@gadgetinc/react-shopify-app-bridge"),
-          import("@shopify/app-bridge-react")
+          import("@shopify/app-bridge-react"),
         ]);
+
 
         // Wait for gadgetConfig to be available
         let attempts = 0;
         while (!window.gadgetConfig && attempts < 100) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           attempts++;
         }
-        
+
         if (!window.gadgetConfig) {
           throw new Error("Gadget configuration failed to load");
         }
@@ -93,7 +109,6 @@ function Layout() {
           AppType,
           GadgetProvider,
           useGadget,
-          NavMenu
         });
         setConfigLoaded(true);
       } catch (err) {
@@ -108,7 +123,9 @@ function Layout() {
   if (error) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
-        <Text variant="headingMd" as="h2">Configuration Error</Text>
+        <Text variant="headingMd" as="h2">
+          Configuration Error
+        </Text>
         <Text as="p">{error}</Text>
       </div>
     );
@@ -116,7 +133,14 @@ function Layout() {
 
   if (!configLoaded || !AppBridgeComponents) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
         <Spinner accessibilityLabel="Loading configuration" size="large" />
       </div>
     );
@@ -136,9 +160,10 @@ function Layout() {
 }
 
 function AuthenticatedApp({ AppBridgeComponents }) {
+  // console.log(AppBridgeComponents)
   const { useGadget } = AppBridgeComponents;
   const { isAuthenticated, loading } = useGadget();
-  
+
   if (loading) {
     return (
       <div
@@ -154,20 +179,38 @@ function AuthenticatedApp({ AppBridgeComponents }) {
       </div>
     );
   }
-  return isAuthenticated ? <EmbeddedApp AppBridgeComponents={AppBridgeComponents} /> : <UnauthenticatedApp />;
+  return isAuthenticated ? (
+    <EmbeddedApp AppBridgeComponents={AppBridgeComponents} />
+  ) : (
+    <UnauthenticatedApp />
+  );
 }
 
 function EmbeddedApp({ AppBridgeComponents }) {
-  const { NavMenu } = AppBridgeComponents;
-  
+
+
+  // console.log(typeof NavMenu)
+
   return (
     <>
-      <Outlet />
-      <NavMenu>
-        <Link to="/" rel="home">
-          Shop Information
-        </Link>
+     <NavMenu>
+        <a href="/">
+          Case console
+        </a>
+        <a href="/dashboard">
+          Dashboard
+        </a>
+        <a href="/return-rule-editor">
+          Return rule editor
+        </a>
+        <a href="/workflow-builder">
+          Workflow builder
+        </a>
+        <a href="/integrations">
+          Integrations
+        </a>
       </NavMenu>
+      <Outlet />
     </>
   );
 }

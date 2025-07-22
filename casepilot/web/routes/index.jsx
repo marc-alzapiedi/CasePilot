@@ -1,96 +1,83 @@
 import { useState, useEffect } from "react";
 import { AutoTable } from "@gadgetinc/react/auto/polaris";
 import {
-  Banner,
-  BlockStack,
   Box,
   Card,
   Layout,
-  Link,
   Page,
-  Spinner,
-  Text,
+  Tabs,
+  Frame,
 } from "@shopify/polaris";
 import { getApi } from "../api";
 
+
+
 const IndexPage = () => {
-  const [api, setApi] = useState(null);
-  const [apiReady, setApiReady] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(0);
 
-  useEffect(() => {
-    // Initialize API client
-    const initializeApi = async () => {
-      try {
-        const apiClient = await getApi();
-        setApi(apiClient);
-        setApiReady(true);
-      } catch (error) {
-        console.error("Failed to initialize API client:", error);
-      }
-    };
+  const tabs = [
+    {
+      id: "case-console",
+      content: "Case Console",
+      panelID: "case-console-panel",
+    },
+    {
+      id: "dashboard",
+      content: "Dashboard",
+      panelID: "dashboard-panel",
+    },
+    {
+      id: "return-rule-editor",
+      content: "Return Rule Editor",
+      panelID: "return-rule-editor-panel",
+    },
+    {
+      id: "workflow-builder",
+      content: "Workflow Builder",
+      panelID: "workflow-builder-panel",
+    },
+    {
+      id: "integrations",
+      content: "Integrations",
+      panelID: "integrations-panel",
+    },
+  ];
 
-    initializeApi();
-  }, []);
+  const renderTabContent = () => {
+    switch (selectedTab) {
+      case 0:
+        return <div>Case Console Content</div>;
+      case 1:
+        return <div>Dashboard Content</div>;
+      case 2:
+        return <div>Return Rule Editor Content</div>;
+      case 3:
+        return <div>Workflow Builder Content</div>;
+      case 4:
+        return <div>Integrations Content</div>;
+      default:
+        return <div>Welcome to CasePilot</div>;
+    }
+  };
+
+
 
   return (
-    <Page title="App">
-      <Layout>
-        <Layout.Section>
-          <Banner tone="success">
-            <Text variant="bodyMd" as="p">
-              Successfully connected your Gadget app to Shopify
-            </Text>
-          </Banner>
-        </Layout.Section>
-        <Layout.Section>
-          <Card>
-            <BlockStack gap="200" inlineAlign="center">
-              <gadget-sparkle-button onClick={() => window.open(`/edit/preview?openShopifyOnboarding=true`, '_top')} style={{ width: "300px", marginTop: "32px", marginBottom: "32px" }}>
-                Start building your app
-              </gadget-sparkle-button>
-              <Text variant="bodyMd" as="p" alignment="center">
-                or edit this page's code directly:&nbsp;
-                <Link
-                  url={`/edit/files/web/routes/index.jsx?openShopifyOnboarding=true`}
-                  target="_blank"
-                  removeUnderline
-                >
-                  web/routes/index.jsx
-                </Link>
-              </Text>
-            </BlockStack>
-          </Card>
-        </Layout.Section>
-        <Layout.Section>
-          <Card padding="0">
-            {!apiReady || !api ? (
-              <Box padding="400" inlineAlign="center">
-                <Spinner accessibilityLabel="Loading shop data" size="large" />
-              </Box>
-            ) : (
-              <>
-                <AutoTable
-                  model={api.shopifyShop}
-                  columns={["name", "countryName", "currency", "customerEmail"]}
-                />
-                <Box padding="400">
-                  <Text variant="headingMd" as="h6">
-                    Shop records fetched from:{" "}
-                    <Link
-                      url={`/edit/model/DataModel-Shopify-Shop/data`}
-                      target="_blank"
-                      removeUnderline
-                    >
-                      api/models/shopifyShop/data
-                    </Link>
-                  </Text>
-                </Box>
-              </>
-            )}
-          </Card>
-        </Layout.Section>
-      </Layout>
-    </Page>
+      <Page fullWidth>
+        <Layout>
+          <Layout.Section>
+            <Card>
+              <Tabs
+                tabs={tabs}
+                selected={selectedTab}
+                onSelect={setSelectedTab}
+                fitted
+              />
+              <Box padding="400">{renderTabContent()}</Box>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
   );
 };
 

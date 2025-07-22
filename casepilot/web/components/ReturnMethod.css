@@ -1,0 +1,81 @@
+.return-method-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.return-method-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.method-button {
+  flex: 1;
+  max-width: 150px;
+  padding: 12px 24px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-right: none;
+}
+
+.method-button:last-child {
+  border-right: 1px solid #d1d5db;
+}
+
+.method-button:hover {
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+.method-button.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+  position: relative;
+  z-index: 1;
+}
+
+.method-button.active:hover {
+  background-color: #2563eb;
+}
+
+.method-interface {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.method-interface h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.method-interface p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}

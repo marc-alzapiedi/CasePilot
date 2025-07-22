@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import ReturnSteps from "./ReturnSteps";
+import ItemSelectionNavigation from "./ItemSelectionNavigation";
 import "./ItemSelection.css";
 
 function ItemSelection({ step, onNext, multiStepData, onBack }) {
@@ -141,11 +142,9 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
     console.log("Return data for all items:", returnData);
 
     // Proceed to next step
-    // onNext({
-    //   selectedItems: selectedItems,
-    //   formDataMap: formDataMap,
-    //   returnData: returnData
-    // });
+    onNext({
+      returnData: returnData
+    });
   }
 
   useEffect(() => {
@@ -359,24 +358,12 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
         )}
 
         
-          <nav className="item-selection__navigation">
-            <button
-              type="button"
-              className="item-selection__nav-button item-selection__nav-button--back"
-              onClick={onBack}
-            >
-              Go back
-            </button>
-            <button
-              type="button"
-              className="item-selection__nav-button item-selection__nav-button--continue"
-              onClick={handleClick}
-              disabled={!areAllFormsValid()}
-              data-tooltip={selectedItems.length === 0 ? "no-items" : "incomplete-forms"}
-            >
-              Continue
-            </button>
-          </nav>
+          <ItemSelectionNavigation
+            onBack={onBack}
+            onContinue={handleClick}
+            disabled={!areAllFormsValid()}
+            tooltip={selectedItems.length === 0 ? "no-items" : "incomplete-forms"}
+          />
         
       </div>
     </>
@@ -384,3 +371,4 @@ function ItemSelection({ step, onNext, multiStepData, onBack }) {
 }
 
 export default ItemSelection;
+

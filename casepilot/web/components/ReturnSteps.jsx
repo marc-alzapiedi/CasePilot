@@ -22,7 +22,9 @@ function ReturnSteps({
                         <div key={step.number} className="return-steps__step">
                             <span className="return-steps__number">{step.number}</span>
                             <RightArrow state={step.number === currentStep ? currentStep : undefined} />
-                            <span className="return-steps__title">{step.title}</span>
+                            <span className={`return-steps__title ${step.title === "Submit" ? "return-steps__title--submit" : ""}`}>
+                                {step.title}
+                            </span>
                         </div>
                         {index < steps.length - 1 && <div className="return-steps__line"></div>}
                     </React.Fragment>

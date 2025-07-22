@@ -1,0 +1,113 @@
+.item-selection__navigation {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.item-selection__nav-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.item-selection__nav-button--continue {
+  background-color: #007bff;
+  color: white;
+}
+
+.item-selection__nav-button--continue:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.item-selection__nav-button--continue:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.item-selection__nav-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.item-selection__nav-button--back {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.item-selection__nav-button--back:hover {
+    background-color: #e5e7eb;
+}
+
+.item-selection__nav-button--continue {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.item-selection__nav-button--continue:hover {
+    background-color: #2563eb;
+}
+
+.item-selection__nav-button--continue:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.item-selection__nav-button--continue:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.item-selection__nav-button--continue:disabled::after {
+  position: absolute;
+  bottom: 90%;
+  /* left: 50%; */
+  right: 0;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  margin-bottom: 5px;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: 250px;
+  white-space: normal;
+  text-align: left;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.item-selection__nav-button--continue:disabled[data-tooltip="no-items"]::after {
+  content: "Please select an item that you want to return";
+}
+
+.item-selection__nav-button--continue:disabled[data-tooltip="incomplete-forms"]::after {
+  content: "Please fill out all required fields before proceeding";
+}
+
+.item-selection__nav-button--continue:disabled:hover::after,
+.item-selection__nav-button--continue:disabled:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.item-selection__nav-button--continue:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
