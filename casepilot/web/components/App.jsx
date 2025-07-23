@@ -13,9 +13,10 @@ import {
 } from "react-router";
 import { getApi } from "../api";
 const IndexPage = lazy(() => import("../routes/index"));
+import ReturnRuleEditor from "../routes/ReturnRuleEditor";
 import "./App.css";
 import ReturnPortal from "../routes/ReturnPortal";
-import { NavMenu } from '@shopify/app-bridge-react';
+import { NavMenu } from "@shopify/app-bridge-react";
 
 function Error404() {
   const navigate = useNavigate();
@@ -61,6 +62,29 @@ function App() {
           />
           <Route path="*" element={<Error404 />} />
         </Route>
+        <Route path="/return-rule-editor" element={<Layout />}>
+          <Route
+            index
+            element={
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                    }}
+                  >
+                    <Spinner accessibilityLabel="Loading page" size="large" />
+                  </div>
+                }
+              >
+                <ReturnRuleEditor />
+              </Suspense>
+            }
+          ></Route>
+        </Route>
       </>
     )
   );
@@ -85,14 +109,11 @@ function Layout() {
     const loadAppBridge = async () => {
       try {
         // Dynamically import app-bridge dependencies
-        const [
-          { AppType, Provider: GadgetProvider, useGadget },
-          { NavMenu },
-        ] = await Promise.all([
-          import("@gadgetinc/react-shopify-app-bridge"),
-          import("@shopify/app-bridge-react"),
-        ]);
-
+        const [{ AppType, Provider: GadgetProvider, useGadget }, { NavMenu }] =
+          await Promise.all([
+            import("@gadgetinc/react-shopify-app-bridge"),
+            import("@shopify/app-bridge-react"),
+          ]);
 
         // Wait for gadgetConfig to be available
         let attempts = 0;
@@ -187,28 +208,15 @@ function AuthenticatedApp({ AppBridgeComponents }) {
 }
 
 function EmbeddedApp({ AppBridgeComponents }) {
-
-
   // console.log(typeof NavMenu)
 
   return (
     <>
-     <NavMenu>
-        <a href="/">
-          Case console
-        </a>
-        <a href="/dashboard">
-          Dashboard
-        </a>
-        <a href="/return-rule-editor">
-          Return rule editor
-        </a>
-        <a href="/workflow-builder">
-          Workflow builder
-        </a>
-        <a href="/integrations">
-          Integrations
-        </a>
+      <NavMenu>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/return-rule-editor">Return rule editor</a>
+        <a href="/workflow-builder">Workflow builder</a>
+        <a href="/integrations">Integrations</a>
       </NavMenu>
       <Outlet />
     </>
