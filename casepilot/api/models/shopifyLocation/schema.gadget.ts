@@ -24,6 +24,8 @@ export const schema: GadgetModel = {
       "fulfillsOnlineOrders",
       "hasActiveInventory",
       "hasUnfulfilledOrders",
+      "inventoryItems",
+      "inventoryQuantities",
       "legacy",
       "legacyResourceId",
       "localPickupSettingsV2",

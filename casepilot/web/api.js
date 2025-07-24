@@ -38,3 +38,27 @@ export const getApi = (options = {}) => {
   return apiInstance;
 };
 
+// Direct API instance for immediate use in React components
+const createApiInstance = () => {
+  // Check if we're in a browser environment
+  if (typeof window === "undefined") {
+    throw new Error("API client requires browser environment. Use getApi({ standalone: true, environment: 'your-environment' }) for server-side usage.");
+  }
+  
+  // Check for Gadget config
+  if (!window.gadgetConfig) {
+    throw new Error("Gadget configuration not available on window.gadgetConfig.");
+  }
+  
+  if (!window.gadgetConfig.environment) {
+    throw new Error("Gadget environment not specified in window.gadgetConfig.environment");
+  }
+  
+  try {
+    return new Client({ environment: window.gadgetConfig.environment });
+  } catch (error) {
+    throw new Error(`Failed to initialize Gadget API client: ${error.message}`);
+  }
+};
+
+export const api = createApiInstance();

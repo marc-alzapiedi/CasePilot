@@ -70,6 +70,39 @@ export const permissions: GadgetPermissions = {
             update: true,
           },
         },
+        shopifyInventoryItem: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyInventoryItem.gelly",
+          },
+          actions: {
+            create: true,
+            delete: true,
+            update: true,
+          },
+        },
+        shopifyInventoryLevel: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyInventoryLevel.gelly",
+          },
+          actions: {
+            create: true,
+            delete: true,
+            update: true,
+          },
+        },
+        shopifyInventoryQuantity: {
+          read: {
+            filter:
+              "accessControl/filters/shopify/shopifyInventoryQuantity.gelly",
+          },
+          actions: {
+            create: true,
+            delete: true,
+            update: true,
+          },
+        },
         shopifyLocation: {
           read: {
             filter:
@@ -176,6 +209,9 @@ export const permissions: GadgetPermissions = {
             run: true,
           },
         },
+      },
+      actions: {
+        getAllProducts: true,
       },
     },
     unauthenticated: {

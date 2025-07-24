@@ -12,6 +12,7 @@ export const schema: GadgetModel = {
       "availableForSale",
       "barcode",
       "compareAtPrice",
+      "inventoryItem",
       "inventoryPolicy",
       "inventoryQuantity",
       "media",

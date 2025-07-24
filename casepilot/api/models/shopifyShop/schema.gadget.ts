@@ -6,14 +6,19 @@ import type { GadgetModel } from "gadget-server";
 export const schema: GadgetModel = {
   type: "gadget/model-schema/v1",
   storageKey: "DataModel-Shopify-Shop",
-  fields: {},
+  fields: {
+    checkoutApiSupported: {
+      type: "json",
+      storageKey:
+        "ModelField-DataModel-Shopify-Shop-__gadget_graphql_checkout_api_supported::FieldStorageEpoch-DataModel-Shopify-Shop-__gadget_graphql_checkout_api_supported-initial",
+    },
+  },
   shopify: {
     fields: [
       "address1",
       "address2",
       "alerts",
       "billingAddress",
-      "checkoutApiSupported",
       "city",
       "countriesInShippingZones",
       "country",
@@ -41,6 +46,8 @@ export const schema: GadgetModel = {
       "hasGiftCards",
       "hasStorefront",
       "ianaTimezone",
+      "inventoryItems",
+      "inventoryLevels",
       "latitude",
       "locations",
       "longitude",
@@ -83,6 +90,7 @@ export const schema: GadgetModel = {
       "shipsToCountries",
       "shopOwner",
       "shopifyCreatedAt",
+      "shopifyInventoryQuantity",
       "shopifyUpdatedAt",
       "source",
       "syncs",
