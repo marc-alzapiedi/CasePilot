@@ -145,6 +145,9 @@ export const permissions: GadgetPermissions = {
             filter:
               "accessControl/filters/shopify/shopifyProduct.gelly",
           },
+          actions: {
+            update: true,
+          },
         },
         shopifyProductMedia: {
           read: {

@@ -8,7 +8,7 @@ export const schema: GadgetModel = {
   storageKey: "DataModel-Shopify-Order",
   fields: {
     LineItems: { type: "json", storageKey: "aGTnbLwx3k5e" },
-    refunds: {
+    refunds_custom: {
       type: "hasMany",
       children: { model: "refund", belongsToField: "order" },
       storageKey: "1EANT3wAspLT::uZ5K-K5NTx8t",

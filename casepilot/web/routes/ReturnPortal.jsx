@@ -1,4 +1,3 @@
-import React from "react";
 import "../components/ReturnPortal.css"
 import { useState, useEffect } from "react";
 import OrderLookup from "../components/OrderLookup";

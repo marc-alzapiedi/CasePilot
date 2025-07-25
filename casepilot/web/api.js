@@ -61,4 +61,15 @@ const createApiInstance = () => {
   }
 };
 
-export const api = createApiInstance();
+// export const api = createApiInstance();
+
+let _apiInstance = null;
+export const api = new Proxy({}, {
+  get(target, prop) {
+    if(!_apiInstance) {
+      _apiInstance = createApiInstance();
+    }
+
+    return _apiInstance[prop]
+  }
+})

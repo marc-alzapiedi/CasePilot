@@ -13,11 +13,29 @@ export const run = async ({ params, logger, api, connections }) => {
         tags: true,
         createdAt: true,
         updatedAt: true,
+        ReturnEligibility: true
       },
     });
 
     let images = []
+    let price = []
     for (const product of products) {
+      let getPrice = await api.shopifyProductVariant.findMany({
+        filter: {
+          product: {
+            id: { equals: product.id}
+          }
+        },
+        select: {
+          price: true,
+          inventoryQuantity: true,
+          product: {
+            id: true
+          }
+        }
+
+      });
+
       let getMedia = await api.shopifyProductMedia.findMany({
         filter: {
           product: {
@@ -46,7 +64,14 @@ export const run = async ({ params, logger, api, connections }) => {
       });
 
       images.push({
-        productImage: getImage[0]?.image || null
+        productImage: getImage[0]?.image || null,
+        imageId: getImage[0]?.id || null,
+        productId: getMedia[0]?.product.id || null
+
+      })
+
+      price.push({
+        price: getPrice[0]
       })
     }
 
@@ -58,7 +83,8 @@ export const run = async ({ params, logger, api, connections }) => {
         success: true,
         products: products,
         count: products.length,
-        images: images
+        images: images,
+        price: price
       },
     };
   } catch (error) {

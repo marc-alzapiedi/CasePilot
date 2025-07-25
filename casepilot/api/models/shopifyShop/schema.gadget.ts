@@ -7,7 +7,7 @@ export const schema: GadgetModel = {
   type: "gadget/model-schema/v1",
   storageKey: "DataModel-Shopify-Shop",
   fields: {
-    checkoutApiSupported: {
+    checkoutApiSupportedJSON: {
       type: "json",
       storageKey:
         "ModelField-DataModel-Shopify-Shop-__gadget_graphql_checkout_api_supported::FieldStorageEpoch-DataModel-Shopify-Shop-__gadget_graphql_checkout_api_supported-initial",
@@ -19,6 +19,7 @@ export const schema: GadgetModel = {
       "address2",
       "alerts",
       "billingAddress",
+      "checkoutApiSupported",
       "city",
       "countriesInShippingZones",
       "country",

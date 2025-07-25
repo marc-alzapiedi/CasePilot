@@ -32,7 +32,7 @@
     color: #0056b3;
 }
 
-svg{
+.right-arrow{
     width: 60px;
     height: auto;
     color: rgba(255, 255, 255, 0);
@@ -165,7 +165,7 @@ svg{
 }
 
 @media (max-width: 500px) {
-    svg {
+    .right-arrow {
         width: 40px;
     }
 
