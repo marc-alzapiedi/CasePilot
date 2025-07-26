@@ -21,7 +21,7 @@ const ReturnRuleEditor = () => {
   const [value, setValue] = useState("1");
   const [products, setProducts] = useState([]);
   const [productImages, setProductImages] = useState([]);
-  const [productPrice, setProductPrice] = useState([]);
+  const [variants, setProductVariants] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [{ data, error, fetching }, updateProduct] = useAction(api.shopifyProduct.update);
@@ -40,7 +40,7 @@ const ReturnRuleEditor = () => {
       if (response.result.success) {
         setProducts(response.result.products);
         setProductImages(response.result.images);
-        setProductPrice(response.result.price)
+        setProductVariants(response.result.variants)
       } else {
         console.error("Failed to fetch products:", response.result.error);
       }
@@ -76,6 +76,15 @@ const ReturnRuleEditor = () => {
     );
     return productImage?.productImage.originalSrc || null;
   };
+
+  // Helper function to find product inventory by productId
+  const getProductInventory = (productId) => {
+    const productInventory = variants.find((variant) => {
+
+      variant.productId === productId
+    });
+    return productInventory?.inventoryQuantity || null
+  }
 
   const rowMarkup = products.map(
     ({ id, title, status, ReturnEligibility, vendor }, index) => (

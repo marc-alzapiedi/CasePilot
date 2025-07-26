@@ -1,8 +1,22 @@
 /** @type { ActionRun } */
-export const run = async ({ params, logger, api, connections }) => {
+export const run = async ({ params, logger, api, connections, session }) => {
   try {
+
+    const shopId = connections.shopify?.currentShopId
+
+    console.log(shopId)
+
+    if(!shopId) {
+      throw new Error("No shop ID found in session")
+    }
+
     // Fetch all products from the shopifyProduct model
     const products = await api.shopifyProduct.findMany({
+      filter: {
+        shop: {
+          id: { equals: shopId }
+        }
+      },
       select: {
         id: true,
         title: true,
@@ -17,13 +31,38 @@ export const run = async ({ params, logger, api, connections }) => {
       },
     });
 
-    let images = []
-    let price = []
+    const getStoreCurrency = await api.shopifyShop.findMany({
+      filter: {
+        id: { equals: shopId }
+      },
+      select: {
+        currency: true
+      }
+    })
+
+    const getInventoryTracked = await api.shopifyInventoryItem.findMany({
+      filter: {
+        shop: {
+          id: { equals: shopId}
+        }
+
+      },
+      select: {
+        id: true,
+        tracked: true
+      }
+    })
+
+    let images = [];
+    let variants = [];
     for (const product of products) {
-      let getPrice = await api.shopifyProductVariant.findMany({
+      let getVariants = await api.shopifyProductVariant.findMany({
         filter: {
           product: {
             id: { equals: product.id}
+          },
+          shop: {
+            id: { equals: shopId}
           }
         },
         select: {
@@ -31,16 +70,25 @@ export const run = async ({ params, logger, api, connections }) => {
           inventoryQuantity: true,
           product: {
             id: true
+          },
+          title: true,
+          inventoryItem: {
+            id: true
           }
         }
 
       });
+
+
 
       let getMedia = await api.shopifyProductMedia.findMany({
         filter: {
           product: {
             id: { equals: product.id },
           },
+          shop: {
+            id: { equals: shopId }
+          }
         },
         select: {
           id: true,
@@ -56,6 +104,9 @@ export const run = async ({ params, logger, api, connections }) => {
       let getImage = await api.shopifyFile.findMany({
         filter: {
           id: { equals: getMedia[0]?.file?.id },
+          shop: {
+            id: { equals: shopId}
+          }
         },
         select: {
           image: true,
@@ -70,11 +121,40 @@ export const run = async ({ params, logger, api, connections }) => {
 
       })
 
-      price.push({
-        price: getPrice[0]
-      })
-    }
+      // getImage.forEach((image) => {
+      //   images.push({
+      //     productImage: image || null,
+      //     imageId: image.id || null,
+      //     productId: product.id
+      //   })
+      //   console.log(image)
+      // })
 
+
+      // variants.push({
+      //   product: getVariants[0]?.product,
+      //   price: getVariants[0]?.price,
+      //   title: getVariants[0]?.title,
+      //   inventoryQuantity: getVariants[0]?.inventoryQuantity
+      // })
+
+      getVariants.forEach((variant) => {
+        variants.push({
+          product: variant.product,
+          price: variant.price,
+          title: variant.title,
+          inventoryQuantity: variant.inventoryQuantity
+        });
+      });
+
+    };
+
+
+    // const filterInventoryTracked = getInventoryTracked.filter((inventory) => {
+    //   const tracked = inventory.id
+
+    //   return 
+    // })
 
     logger.info(`Retrieved ${products.length} products`);
 
@@ -84,7 +164,9 @@ export const run = async ({ params, logger, api, connections }) => {
         products: products,
         count: products.length,
         images: images,
-        price: price
+        variants: variants,
+        shopId: shopId,
+        storeCurrency: getStoreCurrency[0]
       },
     };
   } catch (error) {
